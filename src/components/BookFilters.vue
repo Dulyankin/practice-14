@@ -24,12 +24,13 @@ import { computed } from 'vue'
 const props = defineProps(['filter', 'books'])
 defineEmits(['update:filter'])
 
-const searchQuery = defineModel('searchQuery') // Используем defineModel для поиска [cite: 487, 545]
+const searchQuery = defineModel('searchQuery')
 
 const filterOptions = [
   { value: 'all', label: 'Все' },
   { value: 'unread', label: 'Непрочитанные' },
-  { value: 'read', label: 'Прочитанные' }
+  { value: 'read', label: 'Прочитанные' },
+  { value: 'favorites', label: '★ Избранные' } // Новый фильтр
 ]
 
 const total = computed(() => props.books.length)
@@ -37,11 +38,12 @@ const completed = computed(() => props.books.filter(b => b.completed).length)
 </script>
 
 <style scoped>
-/* Стили из методички [cite: 496-542] */
 .filters { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
-.search input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px; }
-.filter-buttons { display: flex; gap: 10px; margin-bottom: 15px; }
-.filter-btn { padding: 8px 16px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; }
+.search input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 1em; margin-bottom: 15px; }
+.search input:focus { outline: none; border-color: #4CAF50; }
+.filter-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+.filter-btn { padding: 8px 16px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; transition: all 0.3s; }
+.filter-btn:hover { background: #f0f0f0; }
 .filter-btn.active { background: #4CAF50; color: white; border-color: #4CAF50; }
 .stats { padding-top: 15px; border-top: 1px solid #eee; color: #666; font-size: 0.9em; }
 </style>
