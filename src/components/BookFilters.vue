@@ -1,93 +1,47 @@
-<script setup>
-import { ref } from 'vue'
-import viteLogo from '../assets/vite.svg'
-import heroImg from '../assets/hero.png'
-import vueLogo from '../assets/vue.svg'
+<template>
+  <div class="filters">
+    <div class="search">
+      <input v-model="searchQuery" type="text" placeholder="Поиск по названию или автору..." />
+    </div>
+    <div class="filter-buttons">
+      <button 
+        v-for="option in filterOptions" 
+        :key="option.value"
+        @click="$emit('update:filter', option.value)"
+        :class="['filter-btn', { active: filter === option.value }]"
+      >
+        {{ option.label }}
+      </button>
+    </div>
+    <div class="stats">
+      <p>Всего: {{ total }} | Прочитано: {{ completed }} | Осталось: {{ total - completed }}</p>
+    </div>
+  </div>
+</template>
 
-const count = ref(0)
+<script setup>
+import { computed } from 'vue'
+const props = defineProps(['filter', 'books'])
+defineEmits(['update:filter'])
+
+const searchQuery = defineModel('searchQuery') // Используем defineModel для поиска [cite: 487, 545]
+
+const filterOptions = [
+  { value: 'all', label: 'Все' },
+  { value: 'unread', label: 'Непрочитанные' },
+  { value: 'read', label: 'Прочитанные' }
+]
+
+const total = computed(() => props.books.length)
+const completed = computed(() => props.books.filter(b => b.completed).length)
 </script>
 
-<template>
-  <section id="center">
-    <div class="hero">
-      <img :src="heroImg" class="base" width="170" height="179" alt="" />
-      <img :src="vueLogo" class="framework" alt="Vue logo" />
-      <img :src="viteLogo" class="vite" alt="Vite logo" />
-    </div>
-    <div>
-      <h1>Get started</h1>
-      <p>Edit <code>src/App.vue</code> and save to test <code>HMR</code></p>
-    </div>
-    <button class="counter" @click="count++">Count is {{ count }}</button>
-  </section>
-
-  <div class="ticks"></div>
-
-  <section id="next-steps">
-    <div id="docs">
-      <svg class="icon" role="presentation" aria-hidden="true">
-        <use href="/icons.svg#documentation-icon"></use>
-      </svg>
-      <h2>Documentation</h2>
-      <p>Your questions, answered</p>
-      <ul>
-        <li>
-          <a href="https://vite.dev/" target="_blank">
-            <img class="logo" :src="viteLogo" alt="" />
-            Explore Vite
-          </a>
-        </li>
-        <li>
-          <a href="https://vuejs.org/" target="_blank">
-            <img class="button-icon" :src="vueLogo" alt="" />
-            Learn more
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div id="social">
-      <svg class="icon" role="presentation" aria-hidden="true">
-        <use href="/icons.svg#social-icon"></use>
-      </svg>
-      <h2>Connect with us</h2>
-      <p>Join the Vite community</p>
-      <ul>
-        <li>
-          <a href="https://github.com/vitejs/vite" target="_blank">
-            <svg class="button-icon" role="presentation" aria-hidden="true">
-              <use href="/icons.svg#github-icon"></use>
-            </svg>
-            GitHub
-          </a>
-        </li>
-        <li>
-          <a href="https://chat.vite.dev/" target="_blank">
-            <svg class="button-icon" role="presentation" aria-hidden="true">
-              <use href="/icons.svg#discord-icon"></use>
-            </svg>
-            Discord
-          </a>
-        </li>
-        <li>
-          <a href="https://x.com/vite_js" target="_blank">
-            <svg class="button-icon" role="presentation" aria-hidden="true">
-              <use href="/icons.svg#x-icon"></use>
-            </svg>
-            X.com
-          </a>
-        </li>
-        <li>
-          <a href="https://bsky.app/profile/vite.dev" target="_blank">
-            <svg class="button-icon" role="presentation" aria-hidden="true">
-              <use href="/icons.svg#bluesky-icon"></use>
-            </svg>
-            Bluesky
-          </a>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-  <div class="ticks"></div>
-  <section id="spacer"></section>
-</template>
+<style scoped>
+/* Стили из методички [cite: 496-542] */
+.filters { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.search input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 15px; }
+.filter-buttons { display: flex; gap: 10px; margin-bottom: 15px; }
+.filter-btn { padding: 8px 16px; border: 1px solid #ddd; background: white; border-radius: 4px; cursor: pointer; }
+.filter-btn.active { background: #4CAF50; color: white; border-color: #4CAF50; }
+.stats { padding-top: 15px; border-top: 1px solid #eee; color: #666; font-size: 0.9em; }
+</style>
